@@ -1,0 +1,29 @@
+{
+  "library": {
+    "shelf": {
+      "x": 200,
+      "y": 236,
+      "height": 60,
+      "width": 300,
+      "options": ["books", "chemistry", "carved_horse"],
+      "haunting": "hand"
+    },
+    "window": {
+      "x": 870,
+      "y": 200,
+      "height": 200,
+      "width": 100,
+      "options": ["rainy_window", "closed_shutters", "stormy_window"],
+      "haunting": "silhouette"
+    },
+    "furniture": {
+      "x": 600,
+      "y": 300,
+      "height": 300,
+      "width": 200,
+      "options": ["armchair", "table"],
+      "haunting": "blob"
+    }
+  },
+  "train": {}
+}
