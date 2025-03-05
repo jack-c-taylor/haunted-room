@@ -193,11 +193,18 @@ function takePicture() {
   hauntScene();
 
   // Attempt to take a screenshot.
-  try {
-    window.open(phaserGame.canvas.toDataURL());
-  } catch {
-    console.log("Failed to capture screenshot.");
-  }
+  setTimeout(() => {
+    try {
+      let button = document.createElement("a");
+      button.href = phaserGame.canvas.toDataURL();
+      button.download = "birthday_card";
+      document.body.appendChild(button);
+      button.click();
+      document.body.removeChild(button);
+    } catch {
+      console.log("Failed to capture screenshot.");
+    }
+  }, 100);
 }
 
 /**
