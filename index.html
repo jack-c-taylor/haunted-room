@@ -1,10 +1,29 @@
 <!DOCTYPE html>
 <html>
+  <head>
     <script src="//cdn.jsdelivr.net/npm/phaser@3.88.2/dist/phaser.min.js"></script>
-<head>
-</head>
-<body>
-    <div id="haunted-room-game"></div>
     <script src="./main.js"></script>
-</body>
+    <style>
+      #game-container {
+        display: flex;
+        flex-direction: column;
+        align-items: middle;
+        width: 1000px;
+      }
+
+      #screenshot {
+        color: white;
+        background-color: darkblue;
+        border-radius: 0.5rem;
+        padding: 0.5rem;
+        align-self: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="game-container">
+      <div id="haunted-room-game"></div>
+      <button id="screenshot" onclick="takePicture()">Take picture</button>
+    </div>
+  </body>
 </html>

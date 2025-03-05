@@ -1,5 +1,5 @@
 const config = {
-  type: Phaser.AUTO,
+  type: Phaser.CANVAS,
   parent: "haunted-room-game",
   width: 1000,
   height: 750,
@@ -9,7 +9,7 @@ const config = {
   },
 };
 
-let game, json, sceneIndex;
+let phaserGame, scene, json, sceneIndex;
 let layers = [];
 let images = [];
 
@@ -21,7 +21,8 @@ fetch("./contents.json")
   })
   .catch((e) => console.log(e))
   .finally(() => {
-    new Phaser.Game(config);
+    phaserGame = new Phaser.Game(config);
+    phaserGame.preserveDrawingBuffer = true;
   });
 
 /* Load game textures during game setup. */
@@ -51,7 +52,7 @@ function preload() {
 
 /* Generate initial game display on load. */
 function create() {
-  game = this;
+  scene = this;
 
   // Arrange layers in display order.
   createLayer("background");
@@ -87,11 +88,7 @@ function create() {
     toggleBackground
   );
 
-  createButton(
-    "camera",
-    { x: 150, y: 670, width: 60, height: 60 },
-    takePicture
-  );
+  createButton("camera", { x: 150, y: 670, width: 60, height: 60 }, hauntScene);
 
   // Generate menu options.
   let index = 0;
@@ -147,7 +144,7 @@ function toggleBackground() {
 }
 
 /* Briefly display camera-ready version of scene. */
-function takePicture() {
+function hauntScene() {
   let hauntLayer = layers.find((x) => x.name == "haunting");
   let uxLayer = layers.find((x) => x.name == "ux");
   if (!uxLayer || !hauntLayer || hauntLayer.visible) return;
@@ -178,17 +175,10 @@ function takePicture() {
     "Victorian greetings",
     "Felicitations",
   ]);
-  let title = game.add
+  let title = scene.add
     .text(500, 670, caption, { fontSize: 30 })
     .setFontStyle("italic")
     .setOrigin(0.5, 0.5);
-
-  // Attempt to take a screenshot.
-  try {
-    window.open(game.canvas.toDataURL());
-  } catch {
-    console.log("Failed to capture screenshot.");
-  }
 
   // Restore overlay after 3 seconds.
   setTimeout(() => {
@@ -198,6 +188,18 @@ function takePicture() {
   }, 3000);
 }
 
+/* Convert canvas data to screenshot. */
+function takePicture() {
+  hauntScene();
+
+  // Attempt to take a screenshot.
+  try {
+    window.open(phaserGame.canvas.toDataURL());
+  } catch {
+    console.log("Failed to capture screenshot.");
+  }
+}
+
 /**
  * Generate a layer tied to a top-level array.
  *
@@ -205,7 +207,7 @@ function takePicture() {
  * @returns {layer} layer - The new Phaser layer.
  */
 function createLayer(name) {
-  let layer = game.add.layer();
+  let layer = scene.add.layer();
   layer.name = name;
   layers.push(layer);
 
@@ -220,10 +222,10 @@ function createLayer(name) {
  * @returns {Image} The displayed Phaser image.
  */
 function createImage(name, options = {}) {
-  let image = game.add.image(options.x, options.y, name).setOrigin(0, 0);
+  let image = scene.add.image(options.x, options.y, name).setOrigin(0, 0);
 
   if (options.width && options.height) {
-    const source = game.textures.get(name).getSourceImage();
+    const source = scene.textures.get(name).getSourceImage();
 
     const scaleX = options.width / source.width;
     const scaleY = options.height / source.height;
