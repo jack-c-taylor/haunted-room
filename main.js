@@ -40,7 +40,7 @@ function preload() {
     Object.values(json[place])
       .filter((x) => x.haunting)
       .forEach((y) =>
-        this.load.image(y.haunting, `./images/${y.haunting}.png`)
+        this.load.image(y.haunting, `./images/${y.haunting}.png`),
       );
   });
 
@@ -76,29 +76,33 @@ function create() {
   loadInitialScene();
 
   // Display UX.
+  createImage("blank", { layer: "ux", y: 0, width: 1000, height: 100 });
   createImage("blank", { layer: "ux", y: 650, width: 1000, height: 100 });
   createButton(
     "reset",
     { x: 10, y: 670, width: 60, height: 60 },
-    loadInitialScene
+    loadInitialScene,
   );
   createButton(
     "toggle",
     { x: 80, y: 670, width: 60, height: 60 },
-    toggleBackground
+    toggleBackground,
   );
 
   createButton("camera", { x: 150, y: 670, width: 60, height: 60 }, hauntScene);
 
   // Generate menu options.
-  let index = 0;
+  let index = 0, level = 0;
   Object.values(json).forEach((place) => {
+    index = 0;
+    level = (level + 1) % 2;
+
     Object.keys(place).forEach((layer) => {
       // Create dividing bar.
       createImage("blank", {
         layer: "ux",
-        x: 220 + 100 * index,
-        y: 660,
+        x: 220 * level + 100 * index,
+        y: level * 660,
         width: 5,
         height: 80,
       }).tint = 0x00000;
@@ -108,8 +112,8 @@ function create() {
         createButton(
           item,
           {
-            x: 240 + 100 * index,
-            y: 670,
+            x: 20 + 220 * level + 100 * index,
+            y: level * 660 + 10,
             width: 60,
             height: 60,
             preserveAspect: true,
@@ -121,7 +125,7 @@ function create() {
               y: place[layer].y,
               width: place[layer].width,
               height: place[layer].height,
-            })
+            }),
         );
         index++;
       });
@@ -173,10 +177,15 @@ function hauntScene() {
   const caption = randomItem([
     "Happy birthday!!",
     "Victorian greetings",
+    "Yarr, it's ye birthday",
     "Felicitations",
   ]);
+
+  let overrideCaption = document.getElementById("postcard-caption").value;
+  if (overrideCaption == "") overrideCaption = caption;
+
   let title = scene.add
-    .text(500, 670, caption, { fontSize: 30 })
+    .text(500, 670, overrideCaption, { fontSize: 30 })
     .setFontStyle("italic")
     .setOrigin(0.5, 0.5);
 
